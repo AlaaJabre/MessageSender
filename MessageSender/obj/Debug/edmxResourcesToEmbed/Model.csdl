@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MessagingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="MessagingEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Emails" EntityType="MessagingModel.Email" />
+    <EntitySet Name="Messages" EntityType="MessagingModel.Message" />
+    <EntitySet Name="MessagingGroups" EntityType="MessagingModel.MessagingGroup" />
+    <AssociationSet Name="FK_Messages_MessagingGroups" Association="MessagingModel.FK_Messages_MessagingGroups">
+      <End Role="MessagingGroup" EntitySet="MessagingGroups" />
+      <End Role="Message" EntitySet="Messages" />
+    </AssociationSet>
+    <AssociationSet Name="GroupEmails" Association="MessagingModel.GroupEmails">
+      <End Role="Email" EntitySet="Emails" />
+      <End Role="MessagingGroup" EntitySet="MessagingGroups" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Email">
+    <Key>
+      <PropertyRef Name="EmailId" />
+    </Key>
+    <Property Name="EmailId" Type="Int32" Nullable="false" />
+    <Property Name="Email1" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="MessagingGroups" Relationship="MessagingModel.GroupEmails" FromRole="Email" ToRole="MessagingGroup" />
+  </EntityType>
+  <EntityType Name="Message">
+    <Key>
+      <PropertyRef Name="MessageId" />
+    </Key>
+    <Property Name="MessageId" Type="Int32" Nullable="false" />
+    <Property Name="MessageText" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
+    <Property Name="MessageDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="MessageTime" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="GroupId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="MessagingGroup" Relationship="MessagingModel.FK_Messages_MessagingGroups" FromRole="Message" ToRole="MessagingGroup" />
+  </EntityType>
+  <EntityType Name="MessagingGroup">
+    <Key>
+      <PropertyRef Name="GroupId" />
+    </Key>
+    <Property Name="GroupId" Type="Int32" Nullable="false" />
+    <Property Name="FilePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Messages" Relationship="MessagingModel.FK_Messages_MessagingGroups" FromRole="MessagingGroup" ToRole="Message" />
+    <NavigationProperty Name="Emails" Relationship="MessagingModel.GroupEmails" FromRole="MessagingGroup" ToRole="Email" />
+  </EntityType>
+  <Association Name="FK_Messages_MessagingGroups">
+    <End Type="MessagingModel.MessagingGroup" Role="MessagingGroup" Multiplicity="1" />
+    <End Type="MessagingModel.Message" Role="Message" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MessagingGroup">
+        <PropertyRef Name="GroupId" />
+      </Principal>
+      <Dependent Role="Message">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="GroupEmails">
+    <End Type="MessagingModel.Email" Role="Email" Multiplicity="*" />
+    <End Type="MessagingModel.MessagingGroup" Role="MessagingGroup" Multiplicity="*" />
+  </Association>
+</Schema>

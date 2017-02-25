@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MessagingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Emails">
+          <Key>
+            <PropertyRef Name="EmailId" />
+          </Key>
+          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GroupEmails">
+          <Key>
+            <PropertyRef Name="GroupId" />
+            <PropertyRef Name="EmailId" />
+          </Key>
+          <Property Name="GroupId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Messages">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="int" Nullable="false" />
+          <Property Name="MessageText" Type="nvarchar" MaxLength="4000" Nullable="false" />
+          <Property Name="MessageDate" Type="date" Nullable="false" />
+          <Property Name="MessageTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="GroupId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MessagingGroups">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="int" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_GroupEmails_Emails">
+          <End Role="Emails" Type="Self.Emails" Multiplicity="1" />
+          <End Role="GroupEmails" Type="Self.GroupEmails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailId" />
+            </Principal>
+            <Dependent Role="GroupEmails">
+              <PropertyRef Name="EmailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupEmails_MessagingGroups">
+          <End Role="MessagingGroups" Type="Self.MessagingGroups" Multiplicity="1" />
+          <End Role="GroupEmails" Type="Self.GroupEmails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MessagingGroups">
+              <PropertyRef Name="GroupId" />
+            </Principal>
+            <Dependent Role="GroupEmails">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_MessagingGroups">
+          <End Role="MessagingGroups" Type="Self.MessagingGroups" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MessagingGroups">
+              <PropertyRef Name="GroupId" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MessagingModelStoreContainer">
+          <EntitySet Name="Emails" EntityType="Self.Emails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupEmails" EntityType="Self.GroupEmails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MessagingGroups" EntityType="Self.MessagingGroups" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_GroupEmails_Emails" Association="Self.FK_GroupEmails_Emails">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="GroupEmails" EntitySet="GroupEmails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupEmails_MessagingGroups" Association="Self.FK_GroupEmails_MessagingGroups">
+            <End Role="MessagingGroups" EntitySet="MessagingGroups" />
+            <End Role="GroupEmails" EntitySet="GroupEmails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_MessagingGroups" Association="Self.FK_Messages_MessagingGroups">
+            <End Role="MessagingGroups" EntitySet="MessagingGroups" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MessagingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="MessagingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Emails" EntityType="MessagingModel.Email" />
+          <EntitySet Name="Messages" EntityType="MessagingModel.Message" />
+          <EntitySet Name="MessagingGroups" EntityType="MessagingModel.MessagingGroup" />
+          <AssociationSet Name="FK_Messages_MessagingGroups" Association="MessagingModel.FK_Messages_MessagingGroups">
+            <End Role="MessagingGroup" EntitySet="MessagingGroups" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="GroupEmails" Association="MessagingModel.GroupEmails">
+            <End Role="Email" EntitySet="Emails" />
+            <End Role="MessagingGroup" EntitySet="MessagingGroups" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Email">
+          <Key>
+            <PropertyRef Name="EmailId" />
+          </Key>
+          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="Email1" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MessagingGroups" Relationship="MessagingModel.GroupEmails" FromRole="Email" ToRole="MessagingGroup" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="Int32" Nullable="false" />
+          <Property Name="MessageText" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="MessageDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="MessageTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="GroupId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="MessagingGroup" Relationship="MessagingModel.FK_Messages_MessagingGroups" FromRole="Message" ToRole="MessagingGroup" />
+        </EntityType>
+        <EntityType Name="MessagingGroup">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="Int32" Nullable="false" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Messages" Relationship="MessagingModel.FK_Messages_MessagingGroups" FromRole="MessagingGroup" ToRole="Message" />
+          <NavigationProperty Name="Emails" Relationship="MessagingModel.GroupEmails" FromRole="MessagingGroup" ToRole="Email" />
+        </EntityType>
+        <Association Name="FK_Messages_MessagingGroups">
+          <End Type="MessagingModel.MessagingGroup" Role="MessagingGroup" Multiplicity="1" />
+          <End Type="MessagingModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MessagingGroup">
+              <PropertyRef Name="GroupId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="GroupEmails">
+          <End Type="MessagingModel.Email" Role="Email" Multiplicity="*" />
+          <End Type="MessagingModel.MessagingGroup" Role="MessagingGroup" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MessagingModelStoreContainer" CdmEntityContainer="MessagingEntities">
+          <EntitySetMapping Name="Emails">
+            <EntityTypeMapping TypeName="MessagingModel.Email">
+              <MappingFragment StoreEntitySet="Emails">
+                <ScalarProperty Name="Email1" ColumnName="Email" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="MessagingModel.Message">
+              <MappingFragment StoreEntitySet="Messages">
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="MessageTime" ColumnName="MessageTime" />
+                <ScalarProperty Name="MessageDate" ColumnName="MessageDate" />
+                <ScalarProperty Name="MessageText" ColumnName="MessageText" />
+                <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MessagingGroups">
+            <EntityTypeMapping TypeName="MessagingModel.MessagingGroup">
+              <MappingFragment StoreEntitySet="MessagingGroups">
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="GroupEmails" TypeName="MessagingModel.GroupEmails" StoreEntitySet="GroupEmails">
+            <EndProperty Name="MessagingGroup">
+              <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+            </EndProperty>
+            <EndProperty Name="Email">
+              <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
