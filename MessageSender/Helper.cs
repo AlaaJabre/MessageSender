@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -11,10 +13,14 @@ namespace MessageSender
     {
         public static List<Email> ProcessEmails(string filePath, MessagingEntities dbContext)
         {
-            //Extract emails
-            //check existed 
-            //return list
-            return new List<Email>();
+            var emailsText = File.ReadAllLines(filePath);
+            var existing = dbContext.Emails.Where(c => emailsText.Contains(c.Email1)).ToList();
+            var nonexisting = emailsText.Except(existing.ConvertAll(c => c.Email1)).ToList().ConvertAll(c => new Email() { Email1 = c });
+            dbContext.Emails.AddRange(nonexisting);
+            dbContext.SaveChanges();
+
+            nonexisting.AddRange(existing);
+            return nonexisting;
         }
 
         public static string StoreFile(HttpPostedFileBase toUpload, HttpServerUtilityBase server)
@@ -47,9 +53,22 @@ namespace MessageSender
             };
         }
 
-        public static void SendMessage(List<Email> emailObjects)
+        public static void SendMessage(string recipient, string subject, string body)
         {
-            throw new NotImplementedException();
+            MailMessage emailMessage = new MailMessage("mail@host.com", recipient);
+            emailMessage.Subject = subject;
+            emailMessage.Body = body;
+            emailMessage.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient();
+            smtp.Host = "smtp.host.com";
+            smtp.EnableSsl = true;
+            NetworkCredential NetworkCred = new NetworkCredential();
+            NetworkCred.UserName = "mail@host.com";
+            NetworkCred.Password = "password";
+            smtp.UseDefaultCredentials = true;
+            smtp.Credentials = NetworkCred;
+            smtp.Port = 587;
+            //smtp.Send(emailMessage);            
         }
 
         public static bool IsValid(string messsage)

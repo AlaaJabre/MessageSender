@@ -5,9 +5,9 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="c4d7c6654ef448c7adbc1b6996171076" Name="Diagram1">
-        <EntityTypeShape EntityType="MessagingModel.Email" Width="1.5" PointX="2.125" PointY="1.25" />
-        <EntityTypeShape EntityType="MessagingModel.Message" Width="1.5" PointX="7.375" PointY="0.875" />
-        <EntityTypeShape EntityType="MessagingModel.MessagingGroup" Width="1.5" PointX="4.875" PointY="2.125" />
+        <EntityTypeShape EntityType="MessagingModel.Email" Width="1.5" PointX="0.75" PointY="1.25" />
+        <EntityTypeShape EntityType="MessagingModel.Message" Width="1.5" PointX="5.25" PointY="0.875" />
+        <EntityTypeShape EntityType="MessagingModel.MessagingGroup" Width="1.5" PointX="3" PointY="1.125" />
         <AssociationConnector Association="MessagingModel.FK_Messages_MessagingGroups" />
         <AssociationConnector Association="MessagingModel.GroupEmails" />
       </Diagram>

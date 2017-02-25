@@ -4,7 +4,7 @@
     <Key>
       <PropertyRef Name="EmailId" />
     </Key>
-    <Property Name="EmailId" Type="int" Nullable="false" />
+    <Property Name="EmailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Email" Type="nvarchar" MaxLength="200" Nullable="false" />
   </EntityType>
   <EntityType Name="GroupEmails">
@@ -19,7 +19,7 @@
     <Key>
       <PropertyRef Name="MessageId" />
     </Key>
-    <Property Name="MessageId" Type="int" Nullable="false" />
+    <Property Name="MessageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MessageText" Type="nvarchar" MaxLength="4000" Nullable="false" />
     <Property Name="MessageDate" Type="date" Nullable="false" />
     <Property Name="MessageTime" Type="time" Precision="7" Nullable="false" />
@@ -29,7 +29,7 @@
     <Key>
       <PropertyRef Name="GroupId" />
     </Key>
-    <Property Name="GroupId" Type="int" Nullable="false" />
+    <Property Name="GroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="FilePath" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <Association Name="FK_GroupEmails_Emails">
